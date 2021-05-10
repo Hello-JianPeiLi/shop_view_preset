@@ -22,7 +22,8 @@ import {
   Row,
   Table,
   TableColumn,
-  Switch
+  Switch,
+  Pagination
 } from 'element-ui'
 
 locale.use(lang)
@@ -46,4 +47,5 @@ Vue.use(Row)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Switch)
+Vue.use(Pagination)
 Vue.prototype.$message = Message
