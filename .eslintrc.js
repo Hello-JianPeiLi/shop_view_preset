@@ -9,7 +9,7 @@ module.exports = {
   ],
   parserOptions: {
     parser: 'babel-eslint',
-    ecmaFeatures:{
+    ecmaFeatures: {
       globalReturn: true,
     }
   },

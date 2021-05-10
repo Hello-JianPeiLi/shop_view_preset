@@ -32,7 +32,12 @@
         <el-table-column prop="mg_state" label="状态">
           <!-- 开关 -->
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.mg_state"> </el-switch>
+            <el-switch
+              v-model="scope.row.mg_state"
+              :model="scope.row.mg_state"
+              @change="userStateChanged(scope.row)"
+            >
+            </el-switch>
           </template>
         </el-table-column>
         <el-table-column prop="address" label="操作"> </el-table-column>
@@ -70,6 +75,17 @@ export default {
       this.total = res.data.total
       console.log('userList:', this.userList)
       console.log(this.total)
+    },
+    // 修改用户状态
+    async userStateChanged(userinfo) {
+      const { data: res } = await this.$http.put(
+        `users/${userinfo.id}/state/${userinfo.mg_state}`
+      )
+      if (res.meta.status !== 200) {
+        userinfo.mg_state = !userinfo.mg_state
+        return this.$message.error('更新用户状态失败！')
+      }
+      this.$message.success('更新用户状态成功！')
     }
   }
 }
