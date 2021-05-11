@@ -23,7 +23,8 @@ import {
   Table,
   TableColumn,
   Switch,
-  Pagination
+  Pagination,
+  Dialog
 } from 'element-ui'
 
 locale.use(lang)
@@ -48,4 +49,5 @@ Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Switch)
 Vue.use(Pagination)
+Vue.use(Dialog)
 Vue.prototype.$message = Message

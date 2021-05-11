@@ -24,7 +24,9 @@
           ><el-button slot="append" icon="el-icon-search"></el-button
         ></el-col>
         <el-col :span="4">
-          <el-button type="primary">添加用户</el-button>
+          <el-button type="primary" @click="dialogVisible = true"
+            >添加用户</el-button
+          >
         </el-col>
       </el-row>
       <!-- 用户列表 -->
@@ -56,19 +58,68 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="queryInfo.pagenum"
-        :page-sizes="[1, 2, 3, 5]"
+        :page-sizes="[5, 10, 20, 50]"
         :page-size="queryInfo.pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       >
       </el-pagination>
     </el-card>
+    <!-- 添加用户弹窗 -->
+    <el-dialog
+      title="添加用户"
+      :visible.sync="dialogVisible"
+      width="50%"
+      @close="addDialogClosed"
+    >
+      <!-- 内容主体 -->
+      <el-form
+        ref="addFormRef"
+        :model="addForm"
+        label-width="80px"
+        :rules="addFormRules"
+      >
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="addForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="addForm.password"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="addForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="mobile">
+          <el-input v-model="addForm.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <!-- 底部按钮 -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
   data() {
+    // 检查邮箱规则
+    var checkEamil = (rule, value, callback) => {
+      const regEmail = /^([a-zA-Z0-9]+[_|_|.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|_|.]?)*[a-zA-Z0-9]+.[a-zA-Z]{2,3}$/
+      if (regEmail.test(value)) {
+        callback()
+      }
+      callback(new Error('邮箱格式错误'))
+    }
+    // 检查手机号规则
+    var checkMobile = (rule, value, callback) => {
+      const regMobile = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/
+      if (regMobile.test(value)) {
+        callback()
+      }
+      callback(new Error('手机号格式错误'))
+    }
     return {
       queryInfo: {
         query: '',
@@ -79,7 +130,35 @@ export default {
       },
       props: ['username', 'mobile', 'role_name', 'email', 'mg_state'],
       userList: [],
-      total: 1
+      total: 1,
+      // 添加用户弹窗状态
+      dialogVisible: false,
+      // 添加用户表单
+      addForm: {
+        username: '',
+        password: '',
+        email: '',
+        mobile: ''
+      },
+      // 添加用户表单验证
+      addFormRules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 6, message: '请输入3-10个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 10, message: '请输入6-10个字符', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { validator: checkEamil, trigger: 'blur' }
+        ],
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: checkMobile, trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {
@@ -121,6 +200,26 @@ export default {
       //   console.log('newPage' + newPage)
       this.queryInfo.pagenum = newPage
       this.getUserList()
+    },
+    // 添加用户弹窗关闭以后触发
+    addDialogClosed() {
+      this.$refs.addFormRef.resetFields()
+    },
+    // 添加用户
+    addUser() {
+      this.$refs.addFormRef.validate(async valid => {
+        if (!valid) {
+          return this.$message.error('请完整填写信息')
+        }
+        const { data: res } = await this.$http.post('users', this.addForm)
+        if (res.meta.status !== 201) {
+          return this.$message.error('创建用户失败')
+        }
+        this.$message.success('创建用户成功')
+
+        this.dialogVisible = false
+        this.getUserList()
+      })
     }
   }
 }
