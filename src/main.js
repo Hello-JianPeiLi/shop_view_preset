@@ -10,6 +10,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import './assets/font/iconfont.css'
 // 导入axios
 import axios from 'axios'
+// 解决 chrome tochmove问题
+import 'default-passive-events'
 // 给每个请求加上token
 axios.interceptors.request.use(config => {
   config.headers.Authorization = window.sessionStorage.getItem('token')
