@@ -27,7 +27,8 @@ import {
   Dialog,
   Tooltip,
   MessageBox,
-  Tag
+  Tag,
+  Tree
 } from 'element-ui'
 
 locale.use(lang)
@@ -55,5 +56,7 @@ Vue.use(Pagination)
 Vue.use(Dialog)
 Vue.use(Tooltip)
 Vue.use(Tag)
+Vue.use(Tree)
+
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
