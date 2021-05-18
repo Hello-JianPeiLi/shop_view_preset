@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import lang from 'element-ui/lib/locale/lang/zh-CN'
 import locale from 'element-ui/lib/locale'
+import treeTable from 'vue-table-with-tree-grid'
 // 按需引入element-ui
 import {
   Button,
@@ -62,5 +63,6 @@ Vue.use(Tree)
 Vue.use(Option)
 Vue.use(Select)
 
+Vue.component('tree-table', treeTable)
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
