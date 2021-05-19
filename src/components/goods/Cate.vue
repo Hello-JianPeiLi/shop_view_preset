@@ -8,7 +8,7 @@
     </el-breadcrumb>
     <!-- 卡片区域 -->
     <el-card>
-      <el-button type="primary" @click="dialogVisible = true">
+      <el-button type="primary" @click="addCateDialogVisible = true">
         添加分类
       </el-button>
       <!-- 主题表格 -->
@@ -60,6 +60,22 @@
       >
       </el-pagination>
     </el-card>
+    <!-- 添加分类对话框 -->
+    <el-dialog
+      title="添加分类"
+      :visible.sync="addCateDialogVisible"
+      width="50%"
+    >
+      <el-form ref="form" :model="addCateFormData" label-width="80px">
+        <el-form-item label="分类名称">
+          <el-input v-model="addCateFormData.cat_name"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addCateDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addCate">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -102,7 +118,13 @@ export default {
           type: 'template',
           template: 'opt'
         }
-      ]
+      ],
+      //   添加分类对话框
+      addCateDialogVisible: false,
+      //   添加分类表单对象
+      addCateFormData: {
+        cat_name: ''
+      }
     }
   },
   created() {
@@ -130,6 +152,14 @@ export default {
     handleCurrentChange(newPage) {
       this.queryInfo.pagenum = newPage
       this.getCatesList()
+    },
+    // 展示添加分类对话框
+    showCateDialogVisible() {
+      this.addCateDialogVisible = true
+    },
+    // 添加分类
+    addCate() {
+      this.addCateDialogVisible = false
     }
   }
 }
