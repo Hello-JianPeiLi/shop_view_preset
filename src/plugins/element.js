@@ -32,7 +32,10 @@ import {
   Tree,
   Option,
   Select,
-  Cascader
+  Cascader,
+  Alert,
+  Tabs,
+  TabPane
 } from 'element-ui'
 
 locale.use(lang)
@@ -64,6 +67,9 @@ Vue.use(Tree)
 Vue.use(Option)
 Vue.use(Select)
 Vue.use(Cascader)
+Vue.use(Alert)
+Vue.use(Tabs)
+Vue.use(TabPane)
 
 Vue.component('tree-table', treeTable)
 Vue.prototype.$message = Message

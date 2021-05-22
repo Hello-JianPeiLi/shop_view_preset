@@ -84,7 +84,6 @@
             :props="casaderProps"
             @change="parentCateChanged"
             clearable
-            change-on-select
           ></el-cascader
         ></el-form-item>
       </el-form>
@@ -163,7 +162,9 @@ export default {
       casaderProps: {
         label: 'cat_name',
         value: 'cat_id',
-        children: 'children'
+        children: 'children',
+        expandTrigger: 'hover',
+        checkStrictly: 'true'
       },
       // 被选中的父级id数组
       selectedKeys: []
@@ -241,7 +242,7 @@ export default {
           this.addCateFormData
         )
         if (res.meta.status !== 201) {
-          return this.$message.error(this.$message.error(res.meta.msg))
+          return this.welcome$message.error(this.$message.error(res.meta.msg))
         }
         this.$message.success(res.meta.msg)
         this.getCatesList()
