@@ -8,7 +8,7 @@
     </el-breadcrumb>
     <!-- 卡片区域 -->
     <el-card>
-      <el-button type="primary" @click="addCateDialogVisible = true">
+      <el-button type="primary" @click="showCateDialogVisible">
         添加分类
       </el-button>
       <!-- 主题表格 -->
@@ -65,11 +65,28 @@
       title="添加分类"
       :visible.sync="addCateDialogVisible"
       width="50%"
+      @close="addCateDialogClosed"
     >
-      <el-form ref="form" :model="addCateFormData" label-width="80px">
-        <el-form-item label="分类名称">
+      <el-form
+        ref="addCateFormRef"
+        :rules="addCateFormRules"
+        :model="addCateFormData"
+        label-width="80px"
+      >
+        <el-form-item label="分类名称" prop="cat_name">
           <el-input v-model="addCateFormData.cat_name"></el-input>
         </el-form-item>
+        <el-form-item label="父级分类">
+          <!-- 级联选择器 -->
+          <el-cascader
+            v-model="selectedKeys"
+            :options="parentCateList"
+            :props="casaderProps"
+            @change="parentCateChanged"
+            clearable
+            change-on-select
+          ></el-cascader
+        ></el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addCateDialogVisible = false">取 消</el-button>
@@ -123,8 +140,33 @@ export default {
       addCateDialogVisible: false,
       //   添加分类表单对象
       addCateFormData: {
-        cat_name: ''
-      }
+        // 分类名
+        cat_name: '',
+        // 分类父ID
+        cat_pid: 0,
+        // 分类层级
+        cat_level: 0
+      },
+      // 表单验证
+      addCateFormRules: {
+        cat_name: [
+          {
+            required: true,
+            message: '请输入分类名称',
+            trigger: 'blur'
+          }
+        ]
+      },
+      // 父级分类列表
+      parentCateList: [],
+      // 指定级联选择器的配置对象
+      casaderProps: {
+        label: 'cat_name',
+        value: 'cat_id',
+        children: 'children'
+      },
+      // 被选中的父级id数组
+      selectedKeys: []
     }
   },
   created() {
@@ -141,7 +183,6 @@ export default {
       }
       this.catesList = res.data.result
       this.total = res.data.total
-      console.log(res)
     },
     // 监听每页条数
     handleSizeChange(newSize) {
@@ -155,14 +196,71 @@ export default {
     },
     // 展示添加分类对话框
     showCateDialogVisible() {
+      this.getParentCateList()
       this.addCateDialogVisible = true
+    },
+    // 获取父级分类数据列表
+    async getParentCateList() {
+      const { data: res } = await this.$http.get('categories', {
+        params: { type: 2 }
+      })
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      this.parentCateList = res.data
+    },
+    // 选择项发生变化时触发
+    parentCateChanged() {
+      // 如果 this.selectedKeys 数组中的length 大于0 ，证明组那种的腹肌分类
+      // 反之，就说明没有选中任何父级分类
+      if (this.selectedKeys.length > 0) {
+        // 父级分类的id
+        this.addCateFormData.cat_pid = this.selectedKeys[
+          this.selectedKeys.length - 1
+        ]
+        // 为当前分类的等级赋值
+        this.addCateFormData.cat_level = this.selectedKeys.length
+        return false
+      } else {
+        // 父级分类的id
+        this.addCateFormData.cat_pid = 0
+        // 为当前分类的等级赋值
+        this.addCateFormData.cat_level = 0
+      }
+      console.log(this.addCateFormData)
     },
     // 添加分类
     addCate() {
-      this.addCateDialogVisible = false
+      console.log(this.addCateFormData)
+      this.$refs.addCateFormRef.validate(async valid => {
+        if (!valid) {
+          return this.$message.error('请填写分类名称')
+        }
+        const { data: res } = await this.$http.post(
+          'categories',
+          this.addCateFormData
+        )
+        if (res.meta.status !== 201) {
+          return this.$message.error(this.$message.error(res.meta.msg))
+        }
+        this.$message.success(res.meta.msg)
+        this.getCatesList()
+        this.addCateDialogVisible = false
+      })
+    },
+    // 监听关闭添加分类对话框,重置表单数据
+    addCateDialogClosed() {
+      this.$refs.addCateFormRef.resetFields()
+      this.selectedKeys = []
+      this.addCateFormData.cat_level = 0
+      this.addCateFormData.cat_pid = 0
     }
   }
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.el-cascader {
+  width: 100%;
+}
+</style>

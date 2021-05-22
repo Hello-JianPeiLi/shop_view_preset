@@ -31,7 +31,8 @@ import {
   Tag,
   Tree,
   Option,
-  Select
+  Select,
+  Cascader
 } from 'element-ui'
 
 locale.use(lang)
@@ -62,6 +63,7 @@ Vue.use(Tag)
 Vue.use(Tree)
 Vue.use(Option)
 Vue.use(Select)
+Vue.use(Cascader)
 
 Vue.component('tree-table', treeTable)
 Vue.prototype.$message = Message
