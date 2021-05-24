@@ -50,11 +50,21 @@
                   :key="index"
                   >{{ val }}</el-tag
                 >
+                <el-input
+                  class="input-new-tag"
+                  v-if="scope.row.inputVisible"
+                  v-model="scope.row.inputValue"
+                  ref="saveTagInput"
+                  size="small"
+                  @keyup.enter.native="handleInputConfirm(scope.row)"
+                  @blur="handleInputConfirm(scope.row)"
+                >
+                </el-input>
                 <el-button
                   v-else
                   class="button-new-tag"
                   size="small"
-                  @click="showInput"
+                  @click="showInput(scope.row)"
                   >+ New Tag</el-button
                 >
               </template>
@@ -272,7 +282,10 @@ export default {
       }
       console.log(res.data)
       res.data.forEach(item => {
+        console.log(item)
         item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : []
+        item.inputVisible = false
+        item.inputValue = ''
       })
       console.log(res.data)
       if (this.activeName === 'many') {
@@ -364,6 +377,22 @@ export default {
       }
       this.getParamsDate()
       this.$message.success(res.meta.msg)
+    },
+    // 文本失去焦点，或者摁下 enter
+    handleInputConfirm(row) {
+      if (row.inputValue.trim().length === 0) {
+        row.inputValue = ''
+        row.inputVisible = false
+        return
+      }
+    },
+    // 点击变成输入框
+    showInput(row) {
+      row.inputVisible = true
+      //   $nextTick 页面上元素被重新渲染后才会制定回调函数中的代码
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
     }
   },
   computed: {
@@ -402,5 +431,8 @@ export default {
 }
 .elTag {
   margin-right: 10px;
+}
+.input-new-tag {
+  width: 120px;
 }
 </style>
