@@ -19,3 +19,10 @@ body,
 .el-table {
   margin-top: 20px;
 }
+
+.el-steps {
+  margin: 15px 0;
+}
+.el-step__title {
+  font-size: 13px;
+}

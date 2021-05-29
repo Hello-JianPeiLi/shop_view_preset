@@ -35,7 +35,9 @@ import {
   Cascader,
   Alert,
   Tabs,
-  TabPane
+  TabPane,
+  Step,
+  Steps
 } from 'element-ui'
 
 locale.use(lang)
@@ -70,6 +72,8 @@ Vue.use(Cascader)
 Vue.use(Alert)
 Vue.use(Tabs)
 Vue.use(TabPane)
+Vue.use(Step)
+Vue.use(Steps)
 
 Vue.component('tree-table', treeTable)
 Vue.prototype.$message = Message
