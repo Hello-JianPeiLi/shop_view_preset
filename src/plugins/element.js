@@ -37,7 +37,9 @@ import {
   Tabs,
   TabPane,
   Step,
-  Steps
+  Steps,
+  Checkbox,
+  CheckboxGroup
 } from 'element-ui'
 
 locale.use(lang)
@@ -74,6 +76,8 @@ Vue.use(Tabs)
 Vue.use(TabPane)
 Vue.use(Step)
 Vue.use(Steps)
+Vue.use(Checkbox)
+Vue.use(CheckboxGroup)
 
 Vue.component('tree-table', treeTable)
 Vue.prototype.$message = Message
