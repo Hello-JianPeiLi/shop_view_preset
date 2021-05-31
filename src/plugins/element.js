@@ -39,7 +39,8 @@ import {
   Step,
   Steps,
   Checkbox,
-  CheckboxGroup
+  CheckboxGroup,
+  Upload
 } from 'element-ui'
 
 locale.use(lang)
@@ -78,6 +79,7 @@ Vue.use(Step)
 Vue.use(Steps)
 Vue.use(Checkbox)
 Vue.use(CheckboxGroup)
+Vue.use(Upload)
 
 Vue.component('tree-table', treeTable)
 Vue.prototype.$message = Message

@@ -90,7 +90,17 @@
               <el-input v-model="item.attr_vals"></el-input>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
+          <el-tab-pane label="商品图片" name="3">
+            <el-upload
+              action="http://localhost:8889/api/private/v1/upload'"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              list-type="picture"
+            >
+              <el-button size="small" type="primary">点击上传</el-button>
+              <template #tip> </template>
+            </el-upload>
+          </el-tab-pane>
           <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
           <el-tab-pane label="完成" name="5">完成</el-tab-pane>
         </el-tabs>
@@ -110,7 +120,8 @@ export default {
         goods_weight: 0,
         goods_number: 0,
         // 商品所属的分类数组
-        goods_cat: []
+        goods_cat: [],
+        pics: []
       },
       addFormRules: {
         goods_name: [
@@ -153,7 +164,9 @@ export default {
       //   动态参数
       manyTableData: [],
       //   静态属性
-      onlyTableData: []
+      onlyTableData: [],
+      //   上传地址
+      uploadURL: 'http://localhost:8889/api/private/v1/upload'
     }
   },
   created() {
@@ -210,7 +223,11 @@ export default {
         console.log(res.data)
         this.onlyTableData = res.data
       }
-    }
+    },
+    // 图片预览是触发
+    handlePreview() {},
+    // 图片删除是触发
+    handleRemove() {}
   },
   computed: {
     cateId() {
