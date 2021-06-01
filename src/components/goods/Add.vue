@@ -92,10 +92,12 @@
           </el-tab-pane>
           <el-tab-pane label="商品图片" name="3">
             <el-upload
-              action="http://localhost:8889/api/private/v1/upload'"
+              :action="uploadURL"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
               list-type="picture"
+              :headers="headersObj"
+              :on-success="handleSuccess"
             >
               <el-button size="small" type="primary">点击上传</el-button>
               <template #tip> </template>
@@ -166,7 +168,10 @@ export default {
       //   静态属性
       onlyTableData: [],
       //   上传地址
-      uploadURL: 'http://localhost:8889/api/private/v1/upload'
+      uploadURL: 'http://localhost:8889/api/private/v1/upload',
+      headersObj: {
+        Authorization: window.sessionStorage.getItem('token')
+      }
     }
   },
   created() {
@@ -227,7 +232,14 @@ export default {
     // 图片预览是触发
     handlePreview() {},
     // 图片删除是触发
-    handleRemove() {}
+    handleRemove() {},
+    handleSuccess(file) {
+      console.log(file)
+      const picInfo = { pic: file.data.tmp_path }
+      console.log(picInfo)
+      this.addForm.pics.push(picInfo)
+      console.log(this.addForm)
+    }
   },
   computed: {
     cateId() {
